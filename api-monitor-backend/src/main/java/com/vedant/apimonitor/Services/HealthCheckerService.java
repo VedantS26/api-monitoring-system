@@ -200,18 +200,22 @@ public class HealthCheckerService {
                         || endpoint.getLastAlertSentAt()
                         .isBefore(LocalDateTime.now().minusMinutes(interval));
 
+                boolean shouldSendAlert = isNewOutage || cooldownPassed;
+
                 logger.info("isNewOutage: {}", isNewOutage);
                 logger.info("cooldownPassed: {}", cooldownPassed);
                 logger.info("lastAlertSentAt: {}", endpoint.getLastAlertSentAt());
                 logger.info("cooldown cutoff: {}", LocalDateTime.now().minusMinutes(interval));
-                logger.info("Will send alert: {}", isNewOutage || cooldownPassed);
+                logger.info("Will send alert: {}", shouldSendAlert);
 
-                if (isNewOutage && cooldownPassed) {
+                if (shouldSendAlert) {
                     logger.info("Calling alertService.sendDownAlert...");
-                    alertService.sendDownAlert(endpoint, healthLog.getStatusCode());
-                    logger.info("alertService.sendDownAlert called!");
-                    endpoint.setLastAlertSentAt(LocalDateTime.now());
-                    monitoredEndpointRepository.save(endpoint);
+                    boolean emailSent = alertService.sendDownAlert(endpoint, healthLog.getStatusCode());
+                    logger.info("alertService.sendDownAlert completed. emailSent={}", emailSent);
+                    if (emailSent) {
+                        endpoint.setLastAlertSentAt(LocalDateTime.now());
+                        monitoredEndpointRepository.save(endpoint);
+                    }
                 }
 
             } else {

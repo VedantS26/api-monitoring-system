@@ -24,7 +24,7 @@ public class AlertService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    public void sendDownAlert(MonitoredEndpoint endpoint, int statusCode){
+    public boolean sendDownAlert(MonitoredEndpoint endpoint, int statusCode){
 
            logger.info("sendDownAlert called for: {}", endpoint.getUrl());
            logger.info("Sending to: {}", endpoint.getUser().getEmail());
@@ -50,15 +50,17 @@ public class AlertService {
 
 
               logger.info("Email sent successfully!");
+              return true;
             } catch(Exception e){
 
                 logger.error("Email failed: {}", e.getMessage());
                 logger.error("Full error: ", e);
+                return false;
             }
 
     }
 
-    public void RecoveryAlert(MonitoredEndpoint endpoint, int statusCode){
+    public boolean RecoveryAlert(MonitoredEndpoint endpoint, int statusCode){
 
         try{
             SimpleMailMessage message = new SimpleMailMessage();
@@ -78,7 +80,12 @@ public class AlertService {
             );
 
             mailSender.send(message);
+            logger.info("Recovery email sent successfully!");
+            return true;
             } catch (Exception e) {
+                logger.error("Recovery email failed: {}", e.getMessage());
+                logger.error("Full recovery email error: ", e);
+                return false;
             }
 
     }
