@@ -54,14 +54,5 @@ public class EndpointController {
 
     }
 
-    @PatchMapping("/{id}/alert-interval")
-    public ResponseEntity<?> updateAlertInterval(@PathVariable("id") @Min(1) Long endpointId,
-                                                 @RequestParam @Min(value = 1, message = "Alert interval must be at least 1 minute") int minutes) {
-
-        MonitoredEndpoint updated = endpointService.updateAlertInterval(endpointId, minutes);
-
-        return ResponseEntity.ok(updated);
-    }
-
 
 }
