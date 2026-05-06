@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getLogs, getUptime } from '../services/api';
 import {
@@ -15,7 +15,7 @@ function EndpointDetailPage() {
     const [days, setDays] = useState(7);
 
     // ─── Fetch Data ───────────────────────────────────────────
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const [logsRes, uptimeRes] = await Promise.all([
                 getLogs(id),
@@ -28,11 +28,11 @@ function EndpointDetailPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id, days]);
 
     useEffect(() => {
         fetchData();
-    }, [id, days]);
+    }, [fetchData]);
 
     // ─── Chart Data ───────────────────────────────────────────
     const chartData = logs
