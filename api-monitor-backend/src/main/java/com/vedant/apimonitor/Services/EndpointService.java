@@ -66,7 +66,9 @@ public class EndpointService {
         endpoint.setIsActive(true);
         endpoint.setTag(request.getTag());
         endpoint.setUser(user);
-        endpoint.setAlertIntervalMinutes(request.getAlertIntervalMinutes());
+        endpoint.setAlertIntervalMinutes(request.getAlertIntervalMinutes() != null
+                ? request.getAlertIntervalMinutes()
+                : 5);
         endpoint.setCreatedAt(LocalDateTime.now());
         endpoint.setCheckIntervalSeconds(request.getCheckIntervalSeconds());
 
@@ -108,11 +110,18 @@ public class EndpointService {
       MonitoredEndpoint endpoint = getEndpointAndVerifyOwner(endpointId,  user);
 
       if(request.getName() != null){
+          if (request.getName().isBlank()) {
+              throw new RuntimeException("Name cannot be empty");
+          }
 
           endpoint.setName(request.getName());
       }
 
       if(request.getUrl() != null){
+          if (request.getUrl().isBlank() ||
+                  !(request.getUrl().startsWith("http://") || request.getUrl().startsWith("https://"))) {
+              throw new RuntimeException("Invalid URL format. Must start with http:// or https://");
+          }
 
           endpoint.setUrl(request.getUrl());
       }
@@ -125,6 +134,13 @@ public class EndpointService {
 
         if (request.getCheckIntervalSeconds() != null) {
             endpoint.setCheckIntervalSeconds(request.getCheckIntervalSeconds());
+        }
+
+        if (request.getAlertIntervalMinutes() != null) {
+            if (request.getAlertIntervalMinutes() < 1) {
+                throw new RuntimeException("Alert interval must be at least 1 minute");
+            }
+            endpoint.setAlertIntervalMinutes(request.getAlertIntervalMinutes());
         }
 
        return monitoredEndpointRepository.save(endpoint);

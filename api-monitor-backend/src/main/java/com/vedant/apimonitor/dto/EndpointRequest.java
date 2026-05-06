@@ -21,13 +21,13 @@ public class EndpointRequest {
     private Integer checkIntervalSeconds;
 
     @Min(value = 1, message = "Alert interval must be at least 1 minute")
-    private int alertIntervalMinutes;
+    private Integer alertIntervalMinutes;
 
-    public int getAlertIntervalMinutes() {
+    public Integer getAlertIntervalMinutes() {
         return alertIntervalMinutes;
     }
 
-    public void setAlertIntervalMinutes(int alertIntervalMinutes) {
+    public void setAlertIntervalMinutes(Integer alertIntervalMinutes) {
         this.alertIntervalMinutes = alertIntervalMinutes;
     }
 

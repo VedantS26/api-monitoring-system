@@ -45,7 +45,7 @@ public class EndpointController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateEndpoint(@PathVariable("id") @Min(1) Long endpointId,
-                                            @Valid @RequestBody EndpointRequest request){
+                                            @RequestBody EndpointRequest request){
 
         MonitoredEndpoint updated = endpointService.updateEndpoint(endpointId, request);
 
