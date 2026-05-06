@@ -21,36 +21,52 @@ public class AuthService {
 
 
     public String register(String email, String password){
+        String normalizedEmail = normalizeEmail(email);
 
-        if(userRepository.findByEmail(email).isPresent()){
+        if(userRepository.findByEmailIgnoreCase(normalizedEmail).isPresent()){
             throw new RuntimeException("Email already Registered");
         }
 
         User user = new User();
-        user.setEmail(email);
+        user.setEmail(normalizedEmail);
         user.setPassword_hash(passwordEncoder.encode(password));
 
         userRepository.save(user);
 
-        return jwtUtil.generateToken(email);
+        return jwtUtil.generateToken(normalizedEmail);
 
 
     }
 
     public String login(String email, String password){
+        String normalizedEmail = normalizeEmail(email);
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailIgnoreCase(normalizedEmail)
                 .orElseThrow(() -> new RuntimeException("User Not found"));
 
+        String storedPassword = user.getPassword_hash();
+        boolean passwordMatches = passwordEncoder.matches(password, storedPassword);
 
-        if (!passwordEncoder.matches(password, user.getPassword_hash())){
+        if (!passwordMatches && password.equals(storedPassword)) {
+            user.setPassword_hash(passwordEncoder.encode(password));
+            userRepository.save(user);
+            passwordMatches = true;
+        }
+
+        if (!passwordMatches){
 
             throw new RuntimeException("Invalid Password");
         }
 
-        return jwtUtil.generateToken(email);
+        return jwtUtil.generateToken(user.getEmail());
 
     }
 
+    private String normalizeEmail(String email) {
+        if (email == null) {
+            throw new RuntimeException("Email is required");
+        }
+        return email.trim().toLowerCase();
+    }
 
 }

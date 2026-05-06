@@ -19,8 +19,7 @@ const handleLogin = async (e) => {
             setIsLoggedIn(true);          // ← add this
             navigate('/dashboard');
         } catch (err) {
-            
-            setError('Invalid email or password');
+            setError(err.response?.data?.message || 'Invalid email or password');
         } finally {
             setLoading(false);
         }
