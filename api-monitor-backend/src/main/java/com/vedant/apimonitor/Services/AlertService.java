@@ -1,6 +1,10 @@
 package com.vedant.apimonitor.Services;
 
 import com.vedant.apimonitor.Model.MonitoredEndpoint;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,6 +16,8 @@ import java.time.LocalDateTime;
 @Service
 public class AlertService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AlertService.class);
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -19,6 +25,9 @@ public class AlertService {
     private String fromEmail;
 
     public void sendDownAlert(MonitoredEndpoint endpoint, int statusCode){
+
+           logger.info("sendDownAlert called for: {}", endpoint.getUrl());
+           logger.info("Sending to: {}", endpoint.getUser().getEmail());
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -38,7 +47,13 @@ public class AlertService {
                             "API Monitor System"
             );
             mailSender.send(message);
+
+
+              logger.info("Email sent successfully!");
             } catch(Exception e){
+
+                logger.error("Email failed: {}", e.getMessage());
+                logger.error("Full error: ", e);
             }
 
     }
