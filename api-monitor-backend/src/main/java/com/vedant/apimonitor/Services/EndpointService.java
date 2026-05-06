@@ -147,5 +147,17 @@ public class EndpointService {
 
     }
 
+    public MonitoredEndpoint updateAlertInterval(Long endpointId, int alertIntervalMinutes) {
+        if (alertIntervalMinutes < 1) {
+            throw new RuntimeException("Alert interval must be at least 1 minute");
+        }
+
+        User user = getLoggedUser();
+        MonitoredEndpoint endpoint = getEndpointAndVerifyOwner(endpointId, user);
+        endpoint.setAlertIntervalMinutes(alertIntervalMinutes);
+
+        return monitoredEndpointRepository.save(endpoint);
+    }
+
 
 }
