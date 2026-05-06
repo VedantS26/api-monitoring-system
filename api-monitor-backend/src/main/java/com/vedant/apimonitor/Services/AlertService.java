@@ -28,7 +28,7 @@ public class AlertService {
     @Value("${resend.api-key:}")
     private String resendApiKey;
 
-    @Value("${resend.from-email:API Monitor <onboarding@resend.dev>}")
+    @Value("${resend.from-email:onboarding@resend.dev}")
     private String fromEmail;
 
     public boolean sendDownAlert(MonitoredEndpoint endpoint, int statusCode) {
@@ -82,6 +82,7 @@ public class AlertService {
         );
 
         try {
+            logger.info("Using Resend from address: {}", normalizeFromEmail());
             Map response = restTemplate.postForObject(RESEND_EMAILS_URL,
                     new HttpEntity<>(body, headers),
                     Map.class);
@@ -100,9 +101,10 @@ public class AlertService {
     private String normalizeFromEmail() {
         String normalized = fromEmail == null ? "" : fromEmail.trim();
         if ((normalized.startsWith("\"") && normalized.endsWith("\""))
-                || (normalized.startsWith("'") && normalized.endsWith("'"))) {
+                || (normalized.startsWith("'") && normalized.endsWith("'"))
+                || (normalized.startsWith("`") && normalized.endsWith("`"))) {
             normalized = normalized.substring(1, normalized.length() - 1).trim();
         }
-        return normalized;
+        return normalized.isBlank() ? "onboarding@resend.dev" : normalized;
     }
 }
