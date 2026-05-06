@@ -75,7 +75,7 @@ public class AlertService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> body = Map.of(
-                "from", fromEmail,
+                "from", normalizeFromEmail(),
                 "to", List.of(toEmail),
                 "subject", subject,
                 "text", text
@@ -95,5 +95,14 @@ public class AlertService {
             logger.error("Full Resend email error: ", e);
             return false;
         }
+    }
+
+    private String normalizeFromEmail() {
+        String normalized = fromEmail == null ? "" : fromEmail.trim();
+        if ((normalized.startsWith("\"") && normalized.endsWith("\""))
+                || (normalized.startsWith("'") && normalized.endsWith("'"))) {
+            normalized = normalized.substring(1, normalized.length() - 1).trim();
+        }
+        return normalized;
     }
 }
