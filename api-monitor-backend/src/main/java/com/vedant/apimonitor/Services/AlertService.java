@@ -38,15 +38,15 @@ public class AlertService {
         String text = "Hello,\n\n" +
                 "Your API is DOWN!\n\n" +
                 "Details:\n" +
-                "Name:        " + endpoint.getName() + "\n" +
-                "URL:         " + endpoint.getUrl() + "\n" +
-                "Status Code: " + statusCode + "\n" +
-                "Time:        " + LocalDateTime.now() + "\n\n" +
+                "→ Name:        " + endpoint.getName() + "\n" +
+                "→ URL:         " + endpoint.getUrl() + "\n" +
+                "→ Status Code: " + statusCode + "\n" +
+                "→ Time:        " + LocalDateTime.now() + "\n\n" +
                 "Please check your API immediately.\n\n" +
                 "API Monitor System";
 
         return sendEmail(endpoint.getUser().getEmail(),
-                "API Down Alert - " + endpoint.getName(),
+                "🚨 API Down Alert - " + endpoint.getName(),
                 text);
     }
 
@@ -54,13 +54,13 @@ public class AlertService {
         String text = "Hello,\n\n" +
                 "Good news! Your API is back UP!\n\n" +
                 "Details:\n" +
-                "Name:      " + endpoint.getName() + "\n" +
-                "URL:       " + endpoint.getUrl() + "\n" +
-                "Recovered: " + LocalDateTime.now() + "\n\n" +
+                "→ Name:      " + endpoint.getName() + "\n" +
+                "→ URL:       " + endpoint.getUrl() + "\n" +
+                "→ Recovered: " + LocalDateTime.now() + "\n\n" +
                 "API Monitor System";
 
         return sendEmail(endpoint.getUser().getEmail(),
-                "API Recovered - " + endpoint.getName(),
+                "✅ API Recovered - " + endpoint.getName(),
                 text);
     }
 

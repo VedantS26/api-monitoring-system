@@ -187,6 +187,7 @@ public class HealthCheckerService {
 
             int interval = Optional
                     .ofNullable(endpoint.getAlertIntervalMinutes())
+                    .filter(minutes -> minutes > 0)
                     .orElse(5);
 
             if (!healthLog.getIsUp()) {
@@ -209,13 +210,12 @@ public class HealthCheckerService {
                 logger.info("Will send alert: {}", shouldSendAlert);
 
                 if (shouldSendAlert) {
+                    endpoint.setLastAlertSentAt(LocalDateTime.now());
+                    monitoredEndpointRepository.save(endpoint);
+
                     logger.info("Calling alertService.sendDownAlert...");
                     boolean emailSent = alertService.sendDownAlert(endpoint, healthLog.getStatusCode());
                     logger.info("alertService.sendDownAlert completed. emailSent={}", emailSent);
-                    if (emailSent) {
-                        endpoint.setLastAlertSentAt(LocalDateTime.now());
-                        monitoredEndpointRepository.save(endpoint);
-                    }
                 }
 
             } else {
