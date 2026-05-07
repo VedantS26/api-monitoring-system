@@ -1,6 +1,15 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+const rawBaseUrl = process.env.REACT_APP_API_BASE_URL;
+const BASE_URL =
+    rawBaseUrl?.replace(/\/+$/, '') ||
+    (process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '');
+
+if (!BASE_URL && process.env.NODE_ENV === 'production') {
+    // CRA injects REACT_APP_* values at build time, so Vercel must define this
+    // before building the frontend.
+    console.error('Missing REACT_APP_API_BASE_URL. Login requests will be sent to the frontend origin instead of the API.');
+}
 
 const api = axios.create({
     baseURL: BASE_URL,

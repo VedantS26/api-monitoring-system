@@ -2,6 +2,23 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Vercel Deployment
+
+Set this environment variable in the Vercel frontend project before building:
+
+```bash
+REACT_APP_API_BASE_URL=https://your-backend-domain.example.com
+```
+
+Create React App reads `REACT_APP_*` variables at build time. If this value is missing in Vercel, the production build cannot know where the backend API is, so login requests will not reach the deployed Spring Boot service.
+
+Also allow the frontend origin in the backend deployment. The backend supports:
+
+```bash
+APP_CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app
+APP_CORS_ALLOWED_ORIGIN_PATTERNS=https://*.vercel.app
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

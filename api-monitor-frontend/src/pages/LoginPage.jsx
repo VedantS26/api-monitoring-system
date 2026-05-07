@@ -15,11 +15,19 @@ const handleLogin = async (e) => {
 
         try {
             const response = await login(email, password);
-            localStorage.setItem('token', response.data.token);
+            const token = response.data?.token;
+            if (!token) {
+                throw new Error('Login succeeded, but the API did not return a token.');
+            }
+            localStorage.setItem('token', token);
             setIsLoggedIn(true);          // ← add this
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message || 'Invalid email or password');
+            setError(
+                err.response?.data?.message ||
+                err.message ||
+                'Unable to reach the API. Check the deployed API URL and CORS settings.'
+            );
         } finally {
             setLoading(false);
         }
@@ -132,7 +140,7 @@ const styles = {
         boxSizing: 'border-box',
     },   
     button:{
-        widht: '100%',
+        width: '100%',
         padding: '12px',
         backgroundColor: '#4361ee',
         color: 'white',
@@ -140,6 +148,17 @@ const styles = {
         borderRadius: '8px',
         fontSize: '16px',
         cursor: 'pointer',
+        marginTop: '10px',
+    },
+    buttonDisabled: {
+        width: '100%',
+        padding: '12px',
+        backgroundColor: '#a0aec0',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        fontSize: '16px',
+        cursor: 'not-allowed',
         marginTop: '10px',
     },
     error: {

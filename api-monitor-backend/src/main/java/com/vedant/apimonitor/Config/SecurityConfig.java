@@ -24,6 +24,9 @@ public class SecurityConfig {
     @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
 
+    @Value("${app.cors.allowed-origin-patterns:http://localhost:3000,https://*.vercel.app}")
+    private String allowedOriginPatterns;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -54,7 +57,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         for (String origin : allowedOrigins.split(",")) {
-            config.addAllowedOrigin(origin.trim());
+            String trimmedOrigin = origin.trim();
+            if (!trimmedOrigin.isBlank()) {
+                config.addAllowedOrigin(trimmedOrigin);
+            }
+        }
+        for (String originPattern : allowedOriginPatterns.split(",")) {
+            String trimmedPattern = originPattern.trim();
+            if (!trimmedPattern.isBlank()) {
+                config.addAllowedOriginPattern(trimmedPattern);
+            }
         }
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
