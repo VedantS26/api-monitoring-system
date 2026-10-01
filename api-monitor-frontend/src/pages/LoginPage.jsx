@@ -25,6 +25,9 @@ const handleLogin = async (e) => {
         } catch (err) {
             setError(
                 err.response?.data?.message ||
+                (err.code === 'ECONNABORTED'
+                    ? 'The API did not respond. Check that the Render service and its database are online.'
+                    : '') ||
                 err.message ||
                 'Unable to reach the API. Check the deployed API URL and CORS settings.'
             );

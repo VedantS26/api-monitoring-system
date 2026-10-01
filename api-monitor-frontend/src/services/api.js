@@ -13,6 +13,8 @@ if (!BASE_URL && process.env.NODE_ENV === 'production') {
 
 const api = axios.create({
     baseURL: BASE_URL,
+    // Render free services can take about a minute to wake after idling.
+    timeout: 75000,
 });
 
 // attach JWT token to every request automatically
