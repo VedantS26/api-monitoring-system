@@ -3,6 +3,7 @@
 # application properties (contains secrets)
 backend/src/main/resources/application.properties
 api-monitor-backend/target/
+api-monitor-backend/.env
 
 # compiled files
 backend/target/

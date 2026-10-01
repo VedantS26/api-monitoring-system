@@ -107,4 +107,5 @@ public class AlertService {
         }
         return normalized.isBlank() ? "onboarding@resend.dev" : normalized;
     }
+
 }

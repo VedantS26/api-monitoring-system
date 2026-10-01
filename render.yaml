@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: api-monitor-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: api-monitor-backend/Dockerfile
+    dockerContext: api-monitor-backend
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: APP_CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: APP_CORS_ALLOWED_ORIGIN_PATTERNS
+        value: "https://*.vercel.app"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: "onboarding@resend.dev"
